@@ -1,12 +1,15 @@
+import { MaterialIcons } from "@react-native-vector-icons/material-icons";
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 type Props = {
   name: string;
   quantity: number;
+  onEdit: () => void;
+  onDelete: () => void;
 };
 
-const ItemRow: React.FC<Props> = ({ name, quantity }) => {
+const ItemRow: React.FC<Props> = ({ name, quantity, onEdit, onDelete }) => {
   return (
     <View style={styles.container}>
       {/* Left side: Item info */}
@@ -15,6 +18,26 @@ const ItemRow: React.FC<Props> = ({ name, quantity }) => {
           {name}
         </Text>
         <Text style={styles.qty}>Qty: {quantity}</Text>
+      </View>
+      {/* Right side: Action icons */}
+      <View style={styles.actions}>
+        <TouchableOpacity
+          onPress={onEdit}
+          accessibilityRole="button"
+          accessibilityLabel={`Edit ${name}`}
+          style={styles.iconButton}
+        >
+          <MaterialIcons name="edit" size={24} color="#007BFF" />
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={onDelete}
+          accessibilityRole="button"
+          accessibilityLabel={`Delete ${name}`}
+          style={styles.iconButton}
+        >
+          <MaterialIcons name="delete" size={24} color="#D32F2F" />
+        </TouchableOpacity>
       </View>
     </View>
   );
