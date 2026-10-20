@@ -1,4 +1,3 @@
-import { MaterialIcons } from "@react-native-vector-icons/material-icons";
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
@@ -27,7 +26,7 @@ const ItemRow: React.FC<Props> = ({ name, quantity, onEdit, onDelete }) => {
           accessibilityLabel={`Edit ${name}`}
           style={styles.iconButton}
         >
-          <MaterialIcons name="edit" size={24} color="#007BFF" />
+          <Text style={styles.editButton}>Edit</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -36,7 +35,7 @@ const ItemRow: React.FC<Props> = ({ name, quantity, onEdit, onDelete }) => {
           accessibilityLabel={`Delete ${name}`}
           style={styles.iconButton}
         >
-          <MaterialIcons name="delete" size={24} color="#D32F2F" />
+          <Text style={styles.deleteButton}>Delete</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -60,5 +59,13 @@ const styles = StyleSheet.create({
   actions: { flexDirection: "row", gap: 8 },
   iconButton: {
     padding: 4,
+  },
+  editButton: {
+    color: "#007BFF",
+    fontSize: 15,
+  },
+  deleteButton: {
+    color: "#D32F2F",
+    fontSize: 15,
   },
 });

@@ -37,6 +37,7 @@ export default function App() {
   const [name, setName] = useState<string>("");
   const [quantity, setQuantity] = useState<string>("");
   const [editingId, setEditingId] = useState<number | null>(null);
+  const [searchKey, setSearchKey] = useState<string>("");
 
   /**
    * Database State
@@ -184,30 +185,36 @@ export default function App() {
     ]);
   };
 
+  const searchItem = () => {
+    setSearchKey;
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>SQLite Example</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Item Name"
-        value={name}
-        onChangeText={setName}
-      />
+      <View style={styles.inputContainer}>
+        <TextInput
+          style={styles.input}
+          placeholder="Item Name"
+          value={name}
+          onChangeText={setName}
+        />
 
-      {/* 
+        {/* 
         Quantity Input
         
         keyboardType="numeric" shows a number keyboard on mobile devices.
         Note: This doesn't prevent non-numeric input, so we still validate in saveItem().
       */}
 
-      <TextInput
-        style={styles.input}
-        placeholder="Quantity"
-        value={quantity}
-        onChangeText={setQuantity}
-        keyboardType="numeric"
-      />
+        <TextInput
+          style={styles.input}
+          placeholder="Quantity"
+          value={quantity}
+          onChangeText={setQuantity}
+          keyboardType="numeric"
+        />
+      </View>
 
       {/* 
         Save Button
@@ -216,6 +223,12 @@ export default function App() {
       <Button
         title={editingId === null ? "Save Item" : "Update Item"}
         onPress={saveOrUpdate}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Search for item"
+        value={searchKey}
+        onChangeText={searchItem}
       />
       <FlatList
         style={styles.list}
@@ -268,11 +281,14 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   input: {
-    width: "100%",
+    width: "80%",
     borderWidth: 1,
     borderColor: "#ccc",
     padding: 10,
     marginBottom: 10,
+  },
+  inputContainer: {
+    alignItems: "flex-start",
   },
   list: {
     marginTop: 20,
