@@ -5,6 +5,8 @@ import {
   Alert,
   Button,
   FlatList,
+  KeyboardAvoidingView,
+  Platform,
   StyleSheet,
   Text,
   TextInput,
@@ -14,6 +16,7 @@ import {
   deleteItem,
   fetchItems,
   insertItem,
+  searchItem,
   updateItem,
   type Item,
 } from "../data/db";
@@ -59,7 +62,7 @@ export default function App() {
    */
   useEffect(() => {
     loadItems();
-  }, []);
+  }, [searchKey]);
 
   /**
    * Load Items Function
@@ -76,8 +79,13 @@ export default function App() {
    */
   const loadItems = async () => {
     try {
-      const value = await fetchItems(db);
-      setItems(value);
+      if (searchKey.trim() !== "") {
+        const value = await searchItem(db, searchKey);
+        setItems(value);
+      } else {
+        const value = await fetchItems(db);
+        setItems(value);
+      }
     } catch (err) {
       console.log("Failed to fetch items", err);
     }
@@ -185,14 +193,13 @@ export default function App() {
     ]);
   };
 
-  const searchItem = () => {
-    setSearchKey;
-  };
-
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>SQLite Example</Text>
-      <View style={styles.inputContainer}>
+    <KeyboardAvoidingView
+      style={styles.screen}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
+      <View style={styles.container}>
+        <Text style={styles.title}>SQLite Example</Text>
         <TextInput
           style={styles.input}
           placeholder="Item Name"
@@ -214,56 +221,58 @@ export default function App() {
           onChangeText={setQuantity}
           keyboardType="numeric"
         />
-      </View>
 
-      {/* 
+        {/* 
         Save Button
         Triggers the saveOrUpdate function which validates and saves to database.
       */}
-      <Button
-        title={editingId === null ? "Save Item" : "Update Item"}
-        onPress={saveOrUpdate}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Search for item"
-        value={searchKey}
-        onChangeText={searchItem}
-      />
-      <FlatList
-        style={styles.list}
-        data={items}
-        keyExtractor={(item) => item.id.toString()}
-        ItemSeparatorComponent={() => (
-          <View
-            style={{
-              height: 1,
-              backgroundColor: "#eee",
-              marginLeft: 14,
-              marginRight: 14,
-            }}
+        <Button
+          title={editingId === null ? "Save Item" : "Update Item"}
+          onPress={saveOrUpdate}
+        />
+        <View style={styles.searchContainer}>
+          <TextInput
+            style={[styles.input, { width: "30%" }]}
+            placeholder="Search for item"
+            value={searchKey}
+            onChangeText={setSearchKey}
           />
-        )}
-        renderItem={({ item }) => (
-          <ItemRow
-            name={item.name}
-            quantity={item.quantity}
-            onEdit={() => startEdit(item)}
-            onDelete={() => confirmDelete(item.id)}
-          />
-        )}
-        ListEmptyComponent={
-          <Text style={{ textAlign: "center", marginTop: 24, color: "#888" }}>
-            No items yet. Add your first one above.
-          </Text>
-        }
-        contentContainerStyle={
-          items.length === 0
-            ? { flexGrow: 1, justifyContent: "center" }
-            : undefined
-        }
-      />
-    </View>
+        </View>
+        <FlatList
+          style={styles.list}
+          data={items}
+          keyExtractor={(item) => item.id.toString()}
+          ItemSeparatorComponent={() => (
+            <View
+              style={{
+                height: 1,
+                backgroundColor: "#eee",
+                marginLeft: 14,
+                marginRight: 14,
+              }}
+            />
+          )}
+          renderItem={({ item }) => (
+            <ItemRow
+              name={item.name}
+              quantity={item.quantity}
+              onEdit={() => startEdit(item)}
+              onDelete={() => confirmDelete(item.id)}
+            />
+          )}
+          ListEmptyComponent={
+            <Text style={{ textAlign: "center", marginTop: 24, color: "#888" }}>
+              No items yet. Add your first one above.
+            </Text>
+          }
+          contentContainerStyle={
+            items.length === 0
+              ? { flexGrow: 1, justifyContent: "center" }
+              : undefined
+          }
+        />
+      </View>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -281,14 +290,15 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   input: {
-    width: "80%",
+    width: "100%",
     borderWidth: 1,
     borderColor: "#ccc",
     padding: 10,
     marginBottom: 10,
   },
-  inputContainer: {
+  searchContainer: {
     alignItems: "flex-start",
+    width: "100%",
   },
   list: {
     marginTop: 20,
@@ -300,5 +310,8 @@ const styles = StyleSheet.create({
     padding: 10,
     borderBottomWidth: 1,
     borderBottomColor: "#ccc",
+  },
+  screen: {
+    flex: 1,
   },
 });

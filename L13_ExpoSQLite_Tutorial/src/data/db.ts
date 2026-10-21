@@ -137,3 +137,24 @@ export const deleteItem = async (
 ): Promise<void> => {
   await db.runAsync("DELETE FROM items WHERE id = ?;", [id]);
 };
+
+/**
+ * Search Item
+ *
+ * Searches for item from database based on what the user types in search box
+ *
+ * items and names lowercase because they are names of string and array variables
+ *
+ * Example: If array was ["apple", "strawberry", "banana", "pineapple"] and user type in "app", only apple and
+ * pineapple would show up on screen
+ * @param db
+ * @param searchKey
+ */
+export const searchItem = async (
+  db: SQLiteDatabase,
+  searchString: string,
+): Promise<Item[]> => {
+  return await db.getAllAsync<Item>("SELECT * FROM items WHERE name LIKE ?", [
+    `%${searchString}%`,
+  ]);
+};
