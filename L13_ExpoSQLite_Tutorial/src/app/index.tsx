@@ -1,4 +1,4 @@
-import ItemRow from "@/components/ItemRow";
+import ItemRow from "../../components/ItemRow";
 import { useSQLiteContext } from "expo-sqlite";
 import { useEffect, useState } from "react";
 import {
